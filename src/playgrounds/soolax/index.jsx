@@ -10,7 +10,7 @@ const index = () => {
   return (
     <>
       <ReactLenis root>
-        <Leva hidden />
+        <Leva  />
         <div id="wrapper" className="h-[300vh] w-screen z-0 relative bg-black">
           <img src="/bg.png" alt="bg" className="w-full h-[200vh]" />
         </div>
