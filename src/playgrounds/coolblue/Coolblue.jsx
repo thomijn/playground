@@ -13,16 +13,13 @@ export function Model(props) {
   const { nodes, materials, animations } = useGLTF("/coolblue-transformed.glb");
   const { actions } = useAnimations(animations, group);
 
-  useEffect(() => {
-    Object.values(actions).forEach((action) => {
-      action.play().paused = true;
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (props.opened) {
+      console.log(actions);
       Object.values(actions).forEach((action) => {
-        action.paused = false;
+        action.play();
       });
     }
   }, [props.opened]);
@@ -125,17 +122,44 @@ export function Model(props) {
               scale={[1.005, 1, 1.005]}
             />
           </group>
-          <group
-            onClick={() => {
-              !props.opened && props.setOpened(true);
-            }}
-            name="BOX"
-          >
+          <group name="BOX">
             <group name="Null" position={[0, -0.709, 0]}>
-              <mesh material-side={THREE.DoubleSide} receiveShadow castShadow name="Cube_4" geometry={nodes.Cube_4.geometry} material={materials.Mat} position={[0.998, 0, 0]} />
-              <mesh material-side={THREE.DoubleSide} receiveShadow castShadow name="Cube_3" geometry={nodes.Cube_3.geometry} material={materials.Mat_2} position={[0, 0, -0.999]} />
-              <mesh material-side={THREE.DoubleSide} receiveShadow castShadow name="Cube_2" geometry={nodes.Cube_2.geometry} material={materials.Mat_1} position={[-1.001, 0, 0]} />
-              <mesh material-side={THREE.DoubleSide} receiveShadow castShadow name="Cube_1" geometry={nodes.Cube_1.geometry} material={materials.Mat_0} position={[0, 0, 1.001]} />
+              <mesh
+                material-side={THREE.DoubleSide}
+                receiveShadow
+                castShadow
+                name="Cube_4"
+                geometry={nodes.Cube_4.geometry}
+                material={materials.Mat}
+                position={[0.998, 0, 0]}
+              />
+              <mesh
+                material-side={THREE.DoubleSide}
+                receiveShadow
+                castShadow
+                name="Cube_3"
+                geometry={nodes.Cube_3.geometry}
+                material={materials.Mat_2}
+                position={[0, 0, -0.999]}
+              />
+              <mesh
+                material-side={THREE.DoubleSide}
+                receiveShadow
+                castShadow
+                name="Cube_2"
+                geometry={nodes.Cube_2.geometry}
+                material={materials.Mat_1}
+                position={[-1.001, 0, 0]}
+              />
+              <mesh
+                material-side={THREE.DoubleSide}
+                receiveShadow
+                castShadow
+                name="Cube_1"
+                geometry={nodes.Cube_1.geometry}
+                material={materials.Mat_0}
+                position={[0, 0, 1.001]}
+              />
               <mesh material-side={THREE.DoubleSide} receiveShadow castShadow name="Cube" geometry={nodes.Cube.geometry} material={materials.Mat} />
             </group>
           </group>

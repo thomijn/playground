@@ -6,9 +6,13 @@ import * as THREE from "three";
 import use8thWall from "../../hooks/use8thWall";
 import PlaceIndicator from "./PlaceIndicator";
 import { useStore } from "../../store";
-import { Box, CameraControls, Environment } from "@react-three/drei";
+import { Box, CameraControls, Cone, Cylinder, Environment, SoftShadows } from "@react-three/drei";
 import styled from "styled-components";
 import { Model } from "./Coolblue";
+import ExplosionConfetti from "./ExplosionConfetti";
+import DustParticles from "./Particles";
+import gsap from "gsap";
+import { Leva } from "leva";
 
 const Coolblue = () => {
   const [canvasEl, setCanvasEl] = useState();
@@ -33,7 +37,7 @@ const Coolblue = () => {
             left: 0,
             width: "100%",
             height: "100%",
-            zIndex: 99,
+            zIndex: placed ? 99 : 101,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,61 +49,96 @@ const Coolblue = () => {
               setPlaced(true);
             }}
             style={{
+              boxShadow: "inset 0 -2px 0 0 #1e4680",
               position: "absolute",
               bottom: 60,
-              color: "black",
+              color: "white",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              fontSize: 24,
-              fontWeight: 400,
+              fontSize: 16,
+              fontWeight: 600,
               background: "#fff",
-              padding: 8,
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
+              paddingInline: 16,
+              width: "fit-content",
+              height: "48px",
+              borderRadius: "4px",
               zIndex: 100,
+              background: "#285dab",
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="feather feather-check"
-            >
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+            Plaats
           </div>
         </motion.div>
       )}
-
+      <Leva hidden />
       {placed && <Interface opened={opened} />}
-      <Canvas shadows>
+      <Canvas
+        style={{
+          width: "100%",
+          height: "100%",
+          zIndex: 100,
+        }}
+        shadows
+      >
         {/* <ExperienceSimple opened={opened} setOpened={setOpened} /> */}
 
-        {XR8 && XR8.Threejs.xrScene() && <Experience setOpened={setOpened} envMap={envMap} detailStatus={detailStatus} XR8={XR8} />}
+        {XR8 && XR8.Threejs.xrScene() && <Experience setOpened={setOpened} opened={opened} envMap={envMap} detailStatus={detailStatus} XR8={XR8} />}
       </Canvas>
     </>
   );
 };
 
 const ExperienceSimple = (props) => {
+  const confettiRef = useRef();
+
+  const triggerExplosion = () => {
+    // Trigger an explosion at a random position
+    // const position = [Math.random() * 10 - 5, Math.random() * 5, Math.random() * 10 - 5];
+    confettiRef.current.handleExplosion(new THREE.Vector3(0, 0 + 1.5, 0));
+  };
+
+  const placePosition = new THREE.Vector3(0, 0, 0);
   return (
     <>
-      <Model scale={2} opened={props.opened} setOpened={props.setOpened} />
+      <SoftShadows />
+      <color attach="background" args={["black"]} />
+      <Cone scale={3} args={[0.5, -2, 100]} rotation={[-Math.PI, 0, 0]} position={[0, 1, 0]}>
+        <meshBasicMaterial color="#fff4bd" depthWrite={false} transparent opacity={0.1} side={THREE.DoubleSide} />
+      </Cone>
+
+      <directionalLight castShadow position={[-5, 8, 5]} intensity={0.5} />
+      <directionalLight castShadow position={[2.5, 8, 2.5]} intensity={1} shadow-bias={-0.0002} />
+      <Environment preset="apartment" environmentIntensity={1} />
+      <ExplosionConfetti ref={confettiRef} amount={100} radius={10} enableShadows colors={["#1792E1", "#FD6721"]} />
       <CameraControls />
-      <directionalLight castShadow position={[2.5, 8, -2.5]} intensity={1} />
-      <Environment files="/room.hdr" />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+      <mesh
+        onClick={() => {
+          props.setOpened(true);
+          setTimeout(() => {
+            triggerExplosion();
+          }, 3000);
+        }}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.01, 0]}
+        receiveShadow
+      >
         <planeGeometry attach="geometry" args={[100, 100]} />
-        <shadowMaterial attach="material" transparent opacity={0.25} />
+        <shadowMaterial attach="material" transparent opacity={0.3} />
       </mesh>
+
+      <DustParticles />
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]}>
+        <planeGeometry attach="geometry" args={[100, 100]} />
+        <meshStandardMaterial attach="material" colorWrite={false} />
+      </mesh>
+      {placePosition && (
+        <>
+          <Model rotation={[0, Math.PI / 2, 0]} scale={1.1} position={placePosition} setOpened={props.setOpened} opened={props.opened} />
+        </>
+      )}
+      {!placePosition && <PlaceIndicator />}
     </>
   );
 };
@@ -124,18 +163,62 @@ const Experience = (props) => {
       });
     }
   }, [camera, setDefaultCamera]);
+  console.log(props.opened);
+
+  const confettiRef = useRef();
+
+  const triggerExplosion = () => {
+    // Trigger an explosion at a random position
+    // const position = [Math.random() * 10 - 5, Math.random() * 5, Math.random() * 10 - 5];
+    confettiRef.current.handleExplosion(new THREE.Vector3(placePosition.x, placePosition.y + 1.5, placePosition.z));
+  };
+
+  const coneLight = useRef();
 
   return (
     <group ref={appRef} visible={true}>
-      <directionalLight castShadow position={[2.5, 8, 2.5]} intensity={1} />
-      <Environment files="/room.hdr" />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-        <planeBufferGeometry attach="geometry" args={[100, 100]} />
-        <shadowMaterial attach="material" transparent opacity={0.25} />
+      <SoftShadows />
+      <directionalLight castShadow position={[-5, 8, 5]} intensity={0.5} />
+      <directionalLight castShadow position={[2.5, 8, 2.5]} intensity={1} shadow-bias={-0.0002} />
+      <Environment map={props.envMap} environmentIntensity={1.5} />
+      <ExplosionConfetti ref={confettiRef} amount={100} radius={10} enableShadows colors={["#1792E1", "#FD6721"]} />
+
+      <Cone ref={coneLight} scale={3} args={[0.5, -2, 100]} rotation={[-Math.PI, 0, 0]} position={[placePosition.x, 1, placePosition.z]}>
+        <meshBasicMaterial color="#fff4bd" depthWrite={false} transparent opacity={0} side={THREE.DoubleSide} />
+      </Cone>
+
+      <DustParticles position={placePosition} opened={props.opened} />
+
+      <mesh
+        onClick={() => {
+          props.setOpened(true);
+
+          gsap.to(coneLight.current.material, {
+            opacity: 0.03,
+            duration: 1,
+            ease: "power3.inOut",
+            delay: 2,
+          });
+
+          setTimeout(() => {
+            triggerExplosion();
+          }, 3000);
+        }}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.01, 0]}
+        receiveShadow
+      >
+        <planeGeometry attach="geometry" args={[100, 100]} />
+        <shadowMaterial attach="material" transparent opacity={0.3} />
+      </mesh>
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]}>
+        <planeGeometry attach="geometry" args={[100, 100]} />
+        <meshStandardMaterial attach="material" colorWrite={false} />
       </mesh>
       {placePosition && (
         <>
-          <Model scale={2} position={placePosition} setOpened={props.setOpened} opened={props.opened} />
+          <Model rotation={[0, Math.PI / 2, 0]} scale={0.9} position={placePosition} setOpened={props.setOpened} opened={props.opened} />
         </>
       )}
       {!placePosition && <PlaceIndicator />}
@@ -160,6 +243,7 @@ const Interface = ({ opened }) => {
 };
 
 const Wrapper = styled(motion.div)`
+  pointer-events: none;
   position: absolute;
   bottom: 0px;
   width: 100%;
