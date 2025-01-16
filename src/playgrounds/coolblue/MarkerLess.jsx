@@ -218,7 +218,7 @@ const Experience = (props) => {
       </mesh>
       {placePosition && (
         <>
-          <Model rotation={[0, Math.PI / 2, 0]} scale={0.9} position={placePosition} setOpened={props.setOpened} opened={props.opened} />
+          <Model rotation={[0, Math.PI / 2, 0]} scale={1} position={placePosition} setOpened={props.setOpened} opened={props.opened} />
         </>
       )}
       {!placePosition && <PlaceIndicator />}
