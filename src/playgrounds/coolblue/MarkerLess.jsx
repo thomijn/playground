@@ -167,10 +167,10 @@ const Experience = (props) => {
 
   const confettiRef = useRef();
 
-  const triggerExplosion = () => {
+  const triggerExplosion = (position) => {
     // Trigger an explosion at a random position
     // const position = [Math.random() * 10 - 5, Math.random() * 5, Math.random() * 10 - 5];
-    confettiRef.current.handleExplosion(new THREE.Vector3(placePosition.x, placePosition.y + 1.5, placePosition.z));
+    confettiRef.current.handleExplosion(position);
   };
 
   const coneLight = useRef();
@@ -181,7 +181,7 @@ const Experience = (props) => {
       <directionalLight castShadow position={[-5, 8, 5]} intensity={0.5} />
       <directionalLight castShadow position={[2.5, 8, 2.5]} intensity={1} shadow-bias={-0.0002} />
       <Environment map={props.envMap} environmentIntensity={1.5} />
-      <ExplosionConfetti ref={confettiRef} amount={100} radius={10} enableShadows colors={["#1792E1", "#FD6721"]} />
+      <ExplosionConfetti  ref={confettiRef} amount={100} radius={10} enableShadows colors={["#1792E1", "#FD6721"]} />
 
       <Cone ref={coneLight} scale={3} args={[0.5, -2, 100]} rotation={[-Math.PI, 0, 0]} position={[placePosition.x, 1, placePosition.z]}>
         <meshBasicMaterial color="#fff4bd" depthWrite={false} transparent opacity={0} side={THREE.DoubleSide} />
@@ -201,8 +201,16 @@ const Experience = (props) => {
           });
 
           setTimeout(() => {
-            triggerExplosion();
+            triggerExplosion(new THREE.Vector3(placePosition.x + 0.5, placePosition.y + 1.5, placePosition.z + 0.2));
           }, 3000);
+
+          setTimeout(() => {
+            triggerExplosion(new THREE.Vector3(placePosition.x + 0.1, placePosition.y + 1.3, placePosition.z - 0.2));
+          }, 3200);
+
+          setTimeout(() => {
+            triggerExplosion(new THREE.Vector3(placePosition.x - 0.4, placePosition.y + 1.8, placePosition.z - 0.2));
+          }, 3500);
         }}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.01, 0]}

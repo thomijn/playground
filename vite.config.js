@@ -5,8 +5,16 @@ import glsl from "vite-plugin-glsl";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), basicSsl(), glsl()],
+  plugins: [react(), glsl()],
   server: {
     host: true,
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  },
+  build: {
+    target: 'esnext'
+  }
 });
