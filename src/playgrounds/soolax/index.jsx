@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import React from "react";
 import { Model } from "./Soolax";
-import { ReactLenis } from "@studio-freight/react-lenis";
+import { ReactLenis } from 'lenis/react'
 import * as THREE from "three";
 
 const index = () => {

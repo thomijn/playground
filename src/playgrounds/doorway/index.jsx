@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import React from "react";
-import { ReactLenis } from "@studio-freight/react-lenis";
+import { ReactLenis } from 'lenis/react'
 import Flip from "gsap/Flip";
 
 gsap.registerPlugin(useGSAP);
