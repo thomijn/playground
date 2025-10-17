@@ -18,7 +18,7 @@ const WebGPUCanvas = ({ children, cameraProps = { position: [0, 0, 5], far: 20, 
   return (
     <Canvas
       className="!fixed inset-0 bg-transparent"
-      performance={{ min: 0.5, debounce: 300 }}
+      // performance={{ min: 0.5, debounce: 300 }}
       camera={cameraProps}
       flat={true}
       gl={async (props) => {

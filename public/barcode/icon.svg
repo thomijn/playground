@@ -1,0 +1,11 @@
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="2" height="2" fill="black"/>
+<rect width="2" height="2" transform="translate(6)" fill="black"/>
+<rect width="2" height="2" transform="translate(12)" fill="black"/>
+<rect width="2" height="2" transform="translate(0 6)" fill="black"/>
+<rect width="2" height="2" transform="translate(6 6)" fill="black"/>
+<rect width="2" height="2" transform="translate(12 6)" fill="black"/>
+<rect width="2" height="2" transform="translate(0 12)" fill="black"/>
+<rect width="2" height="2" transform="translate(6 12)" fill="black"/>
+<rect width="2" height="2" transform="translate(12 12)" fill="black"/>
+</svg>

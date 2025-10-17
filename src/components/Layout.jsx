@@ -1,14 +1,15 @@
 import React, { Suspense } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, hideHeader = false }) => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const shouldHideHeader = isHomePage || hideHeader;
 
   return (
     <div className="min-h-screen">
-      {/* Navigation Bar - only show on non-home pages */}
-      {!isHomePage && (
+      {/* Navigation Bar - hide on home page or when hideHeader is true */}
+      {!shouldHideHeader && (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">

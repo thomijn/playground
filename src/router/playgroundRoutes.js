@@ -15,8 +15,13 @@ const CastleGenerator = lazy(() => import('../playgrounds/castle/index.jsx'));
 const GlowText = lazy(() => import('../playgrounds/glowtext/index.jsx'));
 const FaceTracking = lazy(() => import('../playgrounds/face-tracking/index.jsx'));
 const KNDSParticles = lazy(() => import('../playgrounds/knds-particles/index.jsx'));
+const SvgBlurEffect = lazy(() => import('../playgrounds/svg-blur-effect/index.jsx'));
+const InfinitePlanes = lazy(() => import('../playgrounds/infinite-planes/index.jsx'));
+const DepthMapParallax = lazy(() => import('../playgrounds/depth-map-parallax/index.jsx'));
+const GrabbingMachine = lazy(() => import('../playgrounds/grabbing-machine/index.jsx'));
 
 // Playground configuration - add new playgrounds here
+// Set hideHeader: true to hide the navigation header for any route
 export const playgrounds = [
   {
     id: 'doorway',
@@ -24,7 +29,8 @@ export const playgrounds = [
     description: 'Interactive doorway experience',
     path: '/doorway',
     component: Doorway,
-    category: '3D'
+    category: '3D',
+    hideHeader: false // Set to true to hide the header for this route
   },
   {
     id: 'soolax',
@@ -32,7 +38,8 @@ export const playgrounds = [
     description: 'Soolax 3D visualization',
     path: '/soolax',
     component: Soolax,
-    category: '3D'
+    category: '3D',
+    hideHeader: false
   },
   {
     id: 'coolblue',
@@ -40,7 +47,8 @@ export const playgrounds = [
     description: 'Augmented reality experience',
     path: '/coolblue',
     component: Coolblue,
-    category: 'AR'
+    category: 'AR',
+    hideHeader: false
   },
   {
     id: 'select-shader',
@@ -48,7 +56,8 @@ export const playgrounds = [
     description: 'Interactive shader selection',
     path: '/select-shader',
     component: SelectShader,
-    category: 'Shaders'
+    category: 'Shaders',
+    hideHeader: false
   },
   {
     id: 'north-sea',
@@ -56,7 +65,8 @@ export const playgrounds = [
     description: 'North Sea visualization with Swiper',
     path: '/north-sea',
     component: NorthSea,
-    category: 'Visualization'
+    category: 'Visualization',
+    hideHeader: false
   },
   {
     id: 'webgpu',
@@ -64,7 +74,8 @@ export const playgrounds = [
     description: 'WebGPU experiments',
     path: '/webgpu',
     component: WebGPU,
-    category: 'WebGPU'
+    category: 'WebGPU',
+    hideHeader: false
   },
   {
     id: 'castle',
@@ -72,7 +83,8 @@ export const playgrounds = [
     description: 'Procedural castle generation',
     path: '/castle',
     component: CastleGenerator,
-    category: '3D'
+    category: '3D',
+    hideHeader: false
   },
   {
     id: 'glowtext',
@@ -80,7 +92,8 @@ export const playgrounds = [
     description: 'Glowing text effects',
     path: '/glowtext',
     component: GlowText,
-    category: 'Effects'
+    category: 'Effects',
+    hideHeader: false
   },
   {
     id: 'face-tracking',
@@ -88,7 +101,8 @@ export const playgrounds = [
     description: 'Real-time face mesh detection using MediaPipe',
     path: '/face-tracking',
     component: FaceTracking,
-    category: 'AI/ML'
+    category: 'AI/ML',
+    hideHeader: false
   },
   {
     id: 'knds-particles',
@@ -96,7 +110,44 @@ export const playgrounds = [
     description: 'WebGPU particle system experiments',
     path: '/knds-particles',
     component: KNDSParticles,
-    category: 'WebGPU'
+    category: 'WebGPU',
+    hideHeader: false
+  },
+  {
+    id: 'svg-blur-effect',
+    name: 'SVG Blur Effect',
+    description: 'Interactive SVG blur and filter effects',
+    path: '/svg-blur-effect',
+    component: SvgBlurEffect,
+    category: 'Effects',
+    hideHeader: false
+  },
+  {
+    id: 'infinite-planes',
+    name: 'Infinite Planes',
+    description: 'Infinite grid of 3D planes with different aspect ratios',
+    path: '/infinite-planes',
+    component: InfinitePlanes,
+    category: '3D',
+    hideHeader: true
+  },
+  {
+    id: 'depth-map-parallax',
+    name: 'Depth Map Parallax',
+    description: 'WebGPU parallax mapping with TSL shaders',
+    path: '/depth-map-parallax',
+    component: DepthMapParallax,
+    category: 'WebGPU',
+    hideHeader: false
+  },
+  {
+    id: 'grabbing-machine',
+    name: 'Grabbing Machine',
+    description: 'WebGPU R3F template for grabbing machine simulation',
+    path: '/grabbing-machine',
+    component: GrabbingMachine,
+    category: 'WebGPU',
+    hideHeader: false
   }
 ];
 
@@ -105,7 +156,8 @@ export const generateRoutes = () => {
   return playgrounds.map(playground => ({
     path: playground.path,
     element: playground.component,
-    id: playground.id
+    id: playground.id,
+    hideHeader: playground.hideHeader
   }));
 };
 

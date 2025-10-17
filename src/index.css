@@ -8,6 +8,34 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
+@font-face {
+  font-family: 'Gully';
+  src: url('/gully-font/Gully-Bold-BF663990ca815f7.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gully';
+  src: url('/gully-font/Gully-SCDBold-BF663990cba3e00.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gully';
+  src: url('/gully-font/Gully-Medium-BF663990cbae63a.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gully';
+  src: url('/gully-font/Gully-Regular-BF663990cb9cddb.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html,
 body,
 #root,
