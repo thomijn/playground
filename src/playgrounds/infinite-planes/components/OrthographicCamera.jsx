@@ -4,7 +4,7 @@ import { useControls } from "leva";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import * as THREE from "three";
-import CustomEase from "gsap/dist/customEase";
+import CustomEase from "gsap/customEase";
 
 gsap.registerPlugin(CustomEase, useGSAP);
 
