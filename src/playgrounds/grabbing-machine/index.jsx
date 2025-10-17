@@ -4,7 +4,7 @@ import { Canvas, extend, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import ClawMachine from "./ClawMachine";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, createContext, useContext, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { easing } from "maath";
 import { RigidBody, BallCollider } from "@react-three/rapier";
@@ -16,9 +16,81 @@ import UI from "./UI";
 import GradientBackground from "./GradientBackground";
 import ReactLenis from "lenis/react";
 import SSGIEffects from "./SSGIEffects";
-import { MOBILE_SETTINGS, PHYSICS_SETTINGS } from "./constants";
+import { MOBILE_SETTINGS, PHYSICS_SETTINGS, INTERACTION_SETTINGS } from "./constants";
 
 const defaultAccents = ["#ff8936", "#5b76f5", "#06d6a0", "#f72585"];
+
+// Context for managing ball interactions
+const BallInteractionContext = createContext();
+
+// Ball interaction component (works on all devices)
+function BallInteraction({ children }) {
+  const ballRefs = useRef([]);
+  const { camera, raycaster, pointer, gl } = useThree();
+  console.log(ballRefs)
+  const handlePointerDown = (event) => {
+    console.log(event)
+    
+    // Determine if mobile and get appropriate settings
+    const isMobile = window.innerWidth < MOBILE_SETTINGS.BREAKPOINT;
+    const settings = isMobile ? INTERACTION_SETTINGS.MOBILE : INTERACTION_SETTINGS.DESKTOP;
+    
+    // Get click position in normalized device coordinates
+    const rect = gl.domElement.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    // Cast ray from camera through click point
+    raycaster.setFromCamera({ x, y }, camera);
+    
+    // Get the intersection point with a plane at z=0
+    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const intersectionPoint = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plane, intersectionPoint);
+        console.log(ballRefs)
+    // Find balls within interaction radius of the click point
+    ballRefs.current.forEach(ballRef => {
+      if (ballRef && ballRef.translation) {
+        const ballPosition = ballRef.translation();
+        const ballPos = new THREE.Vector3(ballPosition.x, ballPosition.y, ballPosition.z);
+        const distance = intersectionPoint.distanceTo(ballPos);
+        
+        if (distance < settings.RADIUS) {
+          // Apply upward and slightly outward impulse
+          const direction = ballPos.clone().sub(intersectionPoint).normalize();
+          const impulse = {
+            x: direction.x * settings.LATERAL_IMPULSE,
+            y: settings.IMPULSE_STRENGTH, // Strong upward force
+            z: direction.z * settings.LATERAL_IMPULSE
+          };
+          ballRef.applyImpulse(impulse, true);
+          
+          // Apply random angular impulse for spinning effect
+          const angularImpulse = {
+            x: (Math.random() - 0.5) * settings.ANGULAR_IMPULSE,
+            y: (Math.random() - 0.5) * settings.ANGULAR_IMPULSE,
+            z: (Math.random() - 0.5) * settings.ANGULAR_IMPULSE
+          };
+          ballRef.applyTorqueImpulse(angularImpulse, true);
+        }
+      }
+    });
+  };
+  
+  // Add event listener
+  useMemo(() => {
+    if (gl.domElement) {
+      gl.domElement.addEventListener('pointerdown', handlePointerDown);
+      return () => gl.domElement.removeEventListener('pointerdown', handlePointerDown);
+    }
+  }, [gl.domElement]);
+  
+  return (
+    <BallInteractionContext.Provider value={{ ballRefs }}>
+      {children}
+    </BallInteractionContext.Provider>
+  );
+}
 
 export default function GrabbingMachine() {
   // Leva controls for accent colors
@@ -52,11 +124,13 @@ export default function GrabbingMachine() {
         <GradientBackground />
         <Frame />
         <ambientLight intensity={1} />
-        <Physics /*debug*/ timeStep="vary" debug={false} gravity={[0, -30, 0]}>
-          <ClawMachine />
-          <Borders />
-          {connectors.map((props, i) => <Sphere key={i} {...props} mobile={mobile} accents={accents} />) /* prettier-ignore */}
-        </Physics>
+        <BallInteraction>
+          <Physics /*debug*/ timeStep="vary" debug={false} gravity={[0, -30, 0]}>
+            <ClawMachine />
+            <Borders />
+            {connectors.map((props, i) => <Sphere key={i} {...props} mobile={mobile} accents={accents} />) /* prettier-ignore */}
+          </Physics>
+        </BallInteraction>
         <Environment background>
           <group rotation={[-Math.PI / 3, 0, 1]}>
             {/* {/* <Lightformer form="circle" intensity={100} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} /> */}
@@ -79,6 +153,7 @@ function Sphere({ position, children, mobile, vec = new THREE.Vector3(), r = THR
   const ref = useRef();
   const { viewport } = useThree();
   const { scene, nodes } = useGLTF("/cinnamon/ball.glb");
+  const interactionContext = useContext(BallInteractionContext);
 
   const pos = useMemo(() => {
     if (position) return position;
@@ -129,6 +204,19 @@ function Sphere({ position, children, mobile, vec = new THREE.Vector3(), r = THR
   const scale = useMemo(() => {
     return mobile ? MOBILE_SETTINGS.SPHERE_SCALE : 1;
   }, [mobile]);
+
+  // Register this ball with the interaction system
+  useEffect(() => {
+    if (interactionContext && api.current) {
+      interactionContext.ballRefs.current.push(api.current);
+      return () => {
+        const index = interactionContext.ballRefs.current.indexOf(api.current);
+        if (index > -1) {
+          interactionContext.ballRefs.current.splice(index, 1);
+        }
+      };
+    }
+  }, [interactionContext, api.current]);
 
   return (
     <RigidBody linearDamping={4} angularDamping={1} friction={0.1} position={pos} ref={api} colliders={false}>
