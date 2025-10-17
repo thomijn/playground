@@ -4,11 +4,11 @@ import { useControls } from "leva";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import * as THREE from "three";
-import CustomEase from "gsap/customEase";
+// import CustomEase from "gsap/customEase";
 
-gsap.registerPlugin(CustomEase, useGSAP);
+gsap.registerPlugin( useGSAP);
 
-CustomEase.create("osmo-ease", "0.625, 0.05, 0, 1");
+// CustomEase.create("osmo-ease", "0.625, 0.05, 0, 1");
 
 function OrthographicCamera({ typeOfView = "Grid", foundPlane }) {
   const { camera, gl, size } = useThree();
