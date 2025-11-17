@@ -19,6 +19,7 @@ const SvgBlurEffect = lazy(() => import('../playgrounds/svg-blur-effect/index.js
 const InfinitePlanes = lazy(() => import('../playgrounds/infinite-planes/index.jsx'));
 const DepthMapParallax = lazy(() => import('../playgrounds/depth-map-parallax/index.jsx'));
 const GrabbingMachine = lazy(() => import('../playgrounds/grabbing-machine/index.jsx'));
+const IrelandMap = lazy(() => import('../playgrounds/ireland-map/index.jsx'));
 
 // Playground configuration - add new playgrounds here
 // Set hideHeader: true to hide the navigation header for any route
@@ -146,6 +147,15 @@ export const playgrounds = [
     description: 'WebGPU R3F template for grabbing machine simulation',
     path: '/grabbing-machine',
     component: GrabbingMachine,
+    category: 'WebGPU',
+    hideHeader: false
+  },
+  {
+    id: 'ireland-map',
+    name: 'Ireland Map',
+    description: 'WebGPU canvas for Ireland map visualization',
+    path: '/ireland-map',
+    component: IrelandMap,
     category: 'WebGPU',
     hideHeader: false
   }

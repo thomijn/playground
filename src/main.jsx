@@ -7,6 +7,9 @@ import HomePage from "./components/HomePage.jsx";
 import Layout from "./components/Layout.jsx";
 import { playgrounds } from "./router/playgroundRoutes.js";
 import GrabbingMachine from "./playgrounds/grabbing-machine/index.jsx";
+import DepthMapParallaxPlayground from "./playgrounds/depth-map-parallax/index.jsx";
+import KNDSParticles from "./playgrounds/knds-particles/index.jsx";
+import IrelandMap from "./playgrounds/ireland-map/index.jsx";
 
 // Wrapper component to handle individual route layouts
 const RouteWrapper = ({ children, hideHeader = false }) => (
@@ -44,6 +47,9 @@ createRoot(document.getElementById("root")).render(
         } />
       </Routes>
     </BrowserRouter> */}
-    <GrabbingMachine />
+    {/* <GrabbingMachine /> */}
+    <IrelandMap />
+    {/* <KNDSParticles /> */}
+
   </StrictMode>
 );

@@ -8,7 +8,7 @@ const UI = () => {
         <img src="/cinnamon/logo.png" alt="Cinnamon Logo" className="md:h-16 h-10 w-auto opacity-90" />
       </div>
 
-      <div className="absolute top-0 h-screen w-screen inset-0 pointer-events-none z-10 flex items-center justify-center">
+      {/* <div className="absolute top-0 h-screen w-screen inset-0 pointer-events-none z-10 flex items-center justify-center">
         <div className="text-center top-[-100px] relative">
           <h1
             className={`
@@ -34,7 +34,7 @@ const UI = () => {
             </span>
           </h1>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };
