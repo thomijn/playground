@@ -21,4 +21,6 @@ export const useStore = create((set) => ({
   allowedBottles: true,
   setAllowedBottles: (data) => set({ allowedBottles: data }),
   setDialogPhase: (data) => set({ dialogPhase: data }),
+  quality: "high",
+  setQuality: (data) => set({ quality: data }),
 }));

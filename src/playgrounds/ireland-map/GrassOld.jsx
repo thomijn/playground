@@ -133,3 +133,56 @@ export function Grass({ children, strands = 200, grown = false, ...props }) {
     </>
   );
 }
+
+const vertexShader = `
+ uniform float uTime;
+uniform float u_sway;
+uniform float u_length;
+uniform float uGrowth;
+
+varying vec2 vUv;
+varying vec3 v_pos;
+
+#include ../includes/simplexNoise3d.glsl;
+
+void main() {
+    vUv = uv;
+
+    float cover = 0.25;
+    vec3 pos = position.xyz;
+    vec3 base = vec3(pos.x, pos.y, 0.0);
+    vec4 baseGP = instanceMatrix * vec4(base, 1.0);
+    v_pos = baseGP.xyz;
+
+    float noiseVal = snoise(baseGP.xyz * 0.1 + uTime * 0.3 * u_sway);
+
+    noiseVal = smoothstep(-1.0, 1.0, noiseVal);
+    float swingX = sin(uTime * 0.1 + noiseVal * 5.0 * PI) * pow(pos.z, 2.0);
+    float swingY = cos(uTime * 0.1 + noiseVal * 5.0 * PI) * pow(pos.z, 2.0);
+
+    pos.x += swingX;
+    pos.y += swingY;
+
+    // Apply growth to the Y position
+    pos.z *= uGrowth;
+
+    pos * u_length;
+
+    csm_Position = pos;
+}
+`;
+
+const fragmentShader = `
+  void main() {
+ uniform vec3 uColorA;
+uniform vec3 uColorB;
+uniform float uTime;
+uniform float uOpacity;
+
+varying vec2 vUv;
+
+void main() {
+    csm_DiffuseColor.rgb = mix(uColorB, uColorA, vUv.y);
+    csm_DiffuseColor.a = uOpacity;
+}
+`;

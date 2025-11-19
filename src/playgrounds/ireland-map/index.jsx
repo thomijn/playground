@@ -11,10 +11,12 @@ import { FilterBar } from "./FilterBar";
 import { MakerModal } from "./MakerModal";
 import { ReactLenis } from "lenis/react";
 import { useRef } from "react";
+import { useStore } from "../../store";
 
 export default function IrelandMap() {
   const topRightBorderRef = useRef();
   const bottomLeftBorderRef = useRef();
+  const quality = useStore((state) => state.quality);
 
   const { backgroundColor, fogColor, fogNear, fogFar } = useControls("Scene", {
     backgroundColor: { value: "#f2eccf", label: "Background Color" },
@@ -59,18 +61,20 @@ export default function IrelandMap() {
           <Sheep />
           <Markers bokehScale={bokehScale} />
           <CameraController />
-          <PostProcessing
-            focusDistance={focusDistance}
-            focalLength={focalLength}
-            bokehScale={bokehScale}
-            dissolveSize={dissolveSize}
-            dissolveThickness={dissolveThickness}
-            dissolveColor={dissolveColor}
-            dissolveIntensity={dissolveIntensity}
-            dissolveBackgroundColor={dissolveBackgroundColor}
-            animateDissove={animateDissove}
-            dissolveDuration={dissolveDuration}
-          />
+          {quality === "high" && (
+            <PostProcessing
+              focusDistance={focusDistance}
+              focalLength={focalLength}
+              bokehScale={bokehScale}
+              dissolveSize={dissolveSize}
+              dissolveThickness={dissolveThickness}
+              dissolveColor={dissolveColor}
+              dissolveIntensity={dissolveIntensity}
+              dissolveBackgroundColor={dissolveBackgroundColor}
+              animateDissove={animateDissove}
+              dissolveDuration={dissolveDuration}
+            />
+          )}
         </WebGPUCanvas>
 
         {/* Logo with white background and inverted borders */}

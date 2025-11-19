@@ -7,7 +7,7 @@ import { MeshMatcapNodeMaterial, MeshBasicNodeMaterial } from "three/webgpu";
 import { Grass } from "./Grass";
 
 export function Ireland(props) {
-  const { nodes, materials } = useGLTF("/inis-stor/ireland.glb");
+  const { nodes, materials } = useGLTF("/inis-stor/ireland-transformed.glb");
   const [matcap, url] = useMatcapTexture(
     "415325_83A24E_678239_748C3C", // index of the matcap texture https://github.com/emmelleppi/matcaps/blob/master/matcap-list.json
     1024 // size of the texture ( 64, 128, 256, 512, 1024 )
